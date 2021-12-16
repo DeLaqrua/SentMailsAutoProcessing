@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls,
-  Vcl.Samples.Spin, Vcl.Buttons, Vcl.ExtCtrls, System.Masks;
+  Vcl.Samples.Spin, Vcl.Buttons, Vcl.ExtCtrls,
+  System.Masks, FileCtrl;
 
 type
   TformMain = class(TForm)
@@ -25,6 +26,24 @@ type
     timerAutoprocessing: TTimer;
     timerAutoprocessingState: TTimer;
     procedure FormCreate(Sender: TObject);
+    procedure buttonDirectorySentMailsClick(Sender: TObject);
+    procedure buttonManualProcessingClick(Sender: TObject);
+    procedure speedbuttonPlayClick(Sender: TObject);
+    procedure speedbuttonStopClick(Sender: TObject);
+    procedure timerAutoprocessingStateTimer(Sender: TObject);
+    procedure timerAutoprocessingTimer(Sender: TObject);
+    procedure speedbuttonPlayMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure speedbuttonPlayMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure speedbuttonStopMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure speedbuttonStopMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure spineditMinKeyPress(Sender: TObject; var Key: Char);
+    procedure spineditSecKeyPress(Sender: TObject; var Key: Char);
+    procedure spineditMinChange(Sender: TObject);
+    procedure spineditSecChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -41,6 +60,9 @@ type
 var
   formMain: TformMain;
 
+var
+  directorySentMails: string;
+
 const
   isError = 0;
   isSuccess = 1;
@@ -55,22 +77,52 @@ begin
   AddLog('ƒата открыти€ программы: ' + DateToStr(Now) + ' ' + TimeToStr(Now) + #13#10, isInformation);
 end;
 
+procedure TformMain.buttonManualProcessingClick(Sender: TObject);
+begin
+  buttonManualProcessing.Enabled := False;
+  timerAutoprocessing.Enabled := False;
+  speedbuttonPlay.Enabled := False;
+  speedbuttonStop.Enabled := False;
+
+  try
+    directorySentMails := CorrectPath(editDirectorySentMails.Text);
+    if System.SysUtils.DirectoryExists(directorySentMails) = False then
+      ShowMessage('ѕроверьте путь к папке дл€ мониторинга отправленных писем. ѕапки не существует')
+
+    else
+      begin
+
+      end;
+  finally
+    buttonManualProcessing.Enabled := True;
+    timerAutoprocessing.Enabled := True;
+    speedbuttonPlay.Enabled := True;
+    speedbuttonStop.Enabled := True;
+  end;
+end;
+
+procedure TformMain.buttonDirectorySentMailsClick(Sender: TObject);
+begin
+  if SelectDirectory('¬ыберите папку работы јвтопроцессинга:', '', directorySentMails, [sdNewFolder, sdShowShares, sdNewUI, sdValidateDir]) then
+    editDirectorySentMails.Text := directorySentMails;
+end;
+
 function TFormMain.CheckFileName(inputFileName: string): boolean;
 begin
   Result := False;
 
-  if MatchesMask(inputFileName, 'SH_*_*_*.zip') or
-     MatchesMask(inputFileName, 'SH3_*_*_*.zip') or
-     MatchesMask(inputFileName, 'SHO_*_*_*.zip') or
-     MatchesMask(inputFileName, 'SHUD_*_*_*.zip') or
-     MatchesMask(inputFileName, 'SMP_*_*_*.zip') or
-     MatchesMask(inputFileName, 'SHCP_*_*_основной.zip') or
-     MatchesMask(inputFileName, 'MSHO_*_MTP_*.zip') or //MTP Ц по-английски
-     MatchesMask(inputFileName, 'MSHO_*_ћ“–_*.zip') or //MTP Ц по-русски
-     MatchesMask(inputFileName, 'MSH_*_MTP_*.zip') or //MTP Ц по-английски
-     MatchesMask(inputFileName, 'MSH_*_ћ“–_*.zip') or //MTP Ц по-русски
-     MatchesMask(inputFileName, 'MSMP_*_MTP_*.zip') or //MTP Ц по-английски
-     MatchesMask(inputFileName, 'MSMP_*_ћ“–_*.zip') then //MTP Ц по-русски
+  if MatchesMask(inputFileName, 'SH_*_*_*.*') or
+     MatchesMask(inputFileName, 'SH3_*_*_*.*') or
+     MatchesMask(inputFileName, 'SHO_*_*_*.*') or
+     MatchesMask(inputFileName, 'SHUD_*_*_*.*') or
+     MatchesMask(inputFileName, 'SMP_*_*_*.*') or
+     MatchesMask(inputFileName, 'SHCP_*_*_основной.*') or
+     MatchesMask(inputFileName, 'MSHO_*_MTP_*.*') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'MSHO_*_ћ“–_*.*') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'MSH_*_MTP_*.*') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'MSH_*_ћ“–_*.*') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'MSMP_*_MTP_*.*') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'MSMP_*_ћ“–_*.*') then //MTP Ц по-русски
     begin
       Result := True;
     end;
@@ -144,6 +196,101 @@ begin
                    end;
   end;
 
+end;
+
+procedure TformMain.speedbuttonPlayClick(Sender: TObject);
+begin
+  buttonManualProcessing.Enabled := False;
+
+  speedbuttonPlay.Visible := False;
+  speedbuttonStop.Visible := True;
+
+  if (spineditSec.Value > 59) or
+     (spineditSec.Value < 0) or
+     (spineditMin.Value < 0) or
+     ( (spineditSec.Value = 0) and (spineditMin.Value = 0) ) then
+    ShowMessage('Ќеверно указаны ћинуты/—екунды')
+  else
+    begin
+      timerAutoProcessing.Interval := spineditMin.Value * 60000 + spineditSec.Value * 1000;
+      timerAutoProcessing.Enabled := True;
+
+      timerAutoProcessingState.Enabled := True;
+      labelAutoProcessingState.Caption := 'јвтопроцессинг запущен';
+    end;
+end;
+
+procedure TformMain.speedbuttonStopClick(Sender: TObject);
+begin
+  buttonManualProcessing.Enabled := True;
+
+  speedbuttonStop.Visible := False;
+  speedbuttonPlay.Visible := True;
+
+  timerAutoProcessingState.Enabled := False;
+  labelAutoProcessingState.Caption := 'јвтопроцессинг не запущен';
+
+  timerAutoProcessing.Enabled := False;
+end;
+
+procedure TformMain.timerAutoprocessingStateTimer(Sender: TObject);
+begin
+  labelAutoProcessingState.Caption := labelAutoProcessingState.Caption + '.';
+  if labelAutoProcessingState.Caption = 'јвтопроцессинг запущен....' then
+    labelAutoProcessingState.Caption := 'јвтопроцессинг запущен';
+end;
+
+procedure TformMain.timerAutoprocessingTimer(Sender: TObject);
+begin
+  timerAutoProcessing.Enabled := False;
+  buttonManualProcessingClick(Self);
+  timerAutoProcessing.Enabled := True;
+end;
+
+procedure TformMain.speedbuttonPlayMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  speedbuttonPlay.Glyph.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'Icons\PlayPush.bmp');
+end;
+
+procedure TformMain.speedbuttonPlayMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  speedbuttonPlay.Glyph.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'Icons\Play.bmp');
+end;
+
+procedure TformMain.speedbuttonStopMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  speedbuttonStop.Glyph.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'Icons\StopPush.bmp');
+end;
+
+procedure TformMain.speedbuttonStopMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  speedbuttonStop.Glyph.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'Icons\Stop.bmp');
+end;
+
+procedure TformMain.spineditMinKeyPress(Sender: TObject; var Key: Char);
+begin
+  spineditMin.SelLength := 1;
+end;
+
+procedure TformMain.spineditSecKeyPress(Sender: TObject; var Key: Char);
+begin
+  spineditSec.SelLength := 1;
+end;
+
+procedure TformMain.spineditMinChange(Sender: TObject);
+begin
+  if SpinEditMin.Text = '' then
+    SpinEditMin.Text := '0';
+end;
+
+procedure TformMain.spineditSecChange(Sender: TObject);
+begin
+  if SpinEditSec.Text = '' then
+    SpinEditSec.Text := '0';
 end;
 
 end.

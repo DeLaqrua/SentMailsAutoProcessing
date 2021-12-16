@@ -1,0 +1,270 @@
+unit UnitSentMailsAutoProcessing;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls,
+  Vcl.Samples.Spin, Vcl.Buttons, Vcl.ExtCtrls,
+  System.Masks, FileCtrl;
+
+type
+  TformMain = class(TForm)
+    labelDirectorySentMails: TLabel;
+    editDirectorySentMails: TEdit;
+    buttonDirectorySentMails: TButton;
+    richeditLog: TRichEdit;
+    labelAutoprocessingInterval: TLabel;
+    spineditMin: TSpinEdit;
+    labelMin: TLabel;
+    spineditSec: TSpinEdit;
+    labelSec: TLabel;
+    speedbuttonPlay: TSpeedButton;
+    speedbuttonStop: TSpeedButton;
+    buttonManualProcessing: TButton;
+    labelAutoprocessingState: TLabel;
+    timerAutoprocessing: TTimer;
+    timerAutoprocessingState: TTimer;
+    procedure FormCreate(Sender: TObject);
+    procedure buttonDirectorySentMailsClick(Sender: TObject);
+    procedure buttonManualProcessingClick(Sender: TObject);
+    procedure speedbuttonPlayClick(Sender: TObject);
+    procedure speedbuttonStopClick(Sender: TObject);
+    procedure timerAutoprocessingStateTimer(Sender: TObject);
+    procedure timerAutoprocessingTimer(Sender: TObject);
+    procedure speedbuttonPlayMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure speedbuttonPlayMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure speedbuttonStopMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure speedbuttonStopMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+  private
+    { Private declarations }
+  public
+    function CheckFileName(inputFileName: string): boolean;
+    function ifFolderExistsRename(inputFolderName: string): string;
+    function CorrectPath(inputDirectory: string): string;
+
+    procedure AddLog(inputString: string; LogType: integer); //LogType бывает:
+                                                             //isError Ц цвет текста  расный
+                                                             //isSuccess Ц цвет текста «елЄный
+                                                           //isInformation Ц цвет текста „Єрный
+  end;
+
+var
+  formMain: TformMain;
+
+var
+  directorySentMails: string;
+
+const
+  isError = 0;
+  isSuccess = 1;
+  isInformation = 2;
+
+implementation
+
+{$R *.dfm}
+
+procedure TformMain.FormCreate(Sender: TObject);
+begin
+  AddLog('ƒата открыти€ программы: ' + DateToStr(Now) + ' ' + TimeToStr(Now) + #13#10, isInformation);
+end;
+
+procedure TformMain.buttonManualProcessingClick(Sender: TObject);
+begin
+  buttonManualProcessing.Enabled := False;
+  timerAutoprocessing.Enabled := False;
+  speedbuttonPlay.Enabled := False;
+  speedbuttonStop.Enabled := False;
+
+  try
+    directorySentMails := CorrectPath(editDirectorySentMails.Text);
+    if System.SysUtils.DirectoryExists(directorySentMails) = False then
+      ShowMessage('ѕроверьте путь к папке дл€ мониторинга отправленных писем. ѕапки не существует')
+
+    else
+      begin
+
+      end;
+  finally
+    buttonManualProcessing.Enabled := True;
+    timerAutoprocessing.Enabled := True;
+    speedbuttonPlay.Enabled := True;
+    speedbuttonStop.Enabled := True;
+  end;
+end;
+
+procedure TformMain.buttonDirectorySentMailsClick(Sender: TObject);
+begin
+  if SelectDirectory('¬ыберите папку работы јвтопроцессинга:', '', directorySentMails, [sdNewFolder, sdShowShares, sdNewUI, sdValidateDir]) then
+    editDirectorySentMails.Text := directorySentMails;
+end;
+
+function TFormMain.CheckFileName(inputFileName: string): boolean;
+begin
+  Result := False;
+
+  if MatchesMask(inputFileName, 'SH_*_*_*.*') or
+     MatchesMask(inputFileName, 'SH3_*_*_*.*') or
+     MatchesMask(inputFileName, 'SHO_*_*_*.*') or
+     MatchesMask(inputFileName, 'SHUD_*_*_*.*') or
+     MatchesMask(inputFileName, 'SMP_*_*_*.*') or
+     MatchesMask(inputFileName, 'SHCP_*_*_основной.*') or
+     MatchesMask(inputFileName, 'MSHO_*_MTP_*.*') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'MSHO_*_ћ“–_*.*') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'MSH_*_MTP_*.*') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'MSH_*_ћ“–_*.*') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'MSMP_*_MTP_*.*') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'MSMP_*_ћ“–_*.*') then //MTP Ц по-русски
+    begin
+      Result := True;
+    end;
+
+end;
+
+function TFormMain.ifFolderExistsRename(inputFolderName: string): string;
+var counterName: integer;
+begin
+  result := inputFolderName;
+
+  counterName := 0;
+  while System.SysUtils.DirectoryExists(inputFolderName) do
+    begin
+      counterName := counterName + 1;
+      if counterName = 1 then
+        begin
+          Insert(' (' + IntToStr(counterName) + ')', inputFolderName, Length(inputFolderName));
+          result := inputFolderName;
+        end
+      else
+        begin
+          inputFolderName := StringReplace(inputFolderName, ' (' + IntToStr(counterName-1) +')', ' (' + IntToStr(counterName) + ')', []);
+          result := inputFolderName;
+        end;
+    end;
+
+end;
+
+function TFormMain.CorrectPath(inputDirectory: string): string;
+begin
+  if inputDirectory = '' then
+    Result := ''
+  else
+    begin
+      inputDirectory := Trim(inputDirectory);
+
+      if Pos('/', inputDirectory) <> 0 then
+        begin
+          inputDirectory := StringReplace(inputDirectory, '/', '\', [rfReplaceAll]);
+        end;
+
+      if inputDirectory[length(inputDirectory)] <> '\' then
+        Result := inputDirectory + '\'
+      else
+        Result := inputDirectory;
+    end;
+end;
+
+procedure TFormMain.AddLog(inputString: string; LogType: integer); //LogType бывает:
+                                                                   //isError Ц цвет текста  расный
+                                                                   //isSuccess Ц цвет текста «елЄный
+                                                                   //isInformation Ц цвет текста „Єрный
+begin
+  case LogType of
+    isError: begin
+               RichEditLog.SelAttributes.Color := clRed;
+               RichEditLog.Lines.Add(inputString);
+               RichEditLog.Refresh;
+             end;
+    isSuccess: begin
+                 RichEditLog.SelAttributes.Color := clBlack;
+                 RichEditLog.SelAttributes.Style := [fsItalic];
+                 RichEditLog.Lines.Add(inputString);
+                 RichEditLog.Refresh;
+               end;
+    isInformation: begin
+                     RichEditLog.SelAttributes.Color := clBlack;
+                     RichEditLog.Lines.Add(inputString);
+                     RichEditLog.Refresh;
+                   end;
+  end;
+
+end;
+
+procedure TformMain.speedbuttonPlayClick(Sender: TObject);
+begin
+  buttonManualProcessing.Enabled := False;
+
+  speedbuttonPlay.Visible := False;
+  speedbuttonStop.Visible := True;
+
+  if (spineditSec.Value > 59) or
+     (spineditSec.Value < 0) or
+     (spineditMin.Value < 0) or
+     ( (spineditSec.Value = 0) and (spineditMin.Value = 0) ) then
+    ShowMessage('Ќеверно указаны ћинуты/—екунды')
+  else
+    begin
+      timerAutoProcessing.Interval := spineditMin.Value * 60000 + spineditSec.Value * 1000;
+      timerAutoProcessing.Enabled := True;
+
+      timerAutoProcessingState.Enabled := True;
+      labelAutoProcessingState.Caption := 'јвтопроцессинг запущен';
+    end;
+end;
+
+procedure TformMain.speedbuttonStopClick(Sender: TObject);
+begin
+  buttonManualProcessing.Enabled := True;
+
+  speedbuttonStop.Visible := False;
+  speedbuttonPlay.Visible := True;
+
+  timerAutoProcessingState.Enabled := False;
+  labelAutoProcessingState.Caption := 'јвтопроцессинг не запущен';
+
+  timerAutoProcessing.Enabled := False;
+end;
+
+procedure TformMain.timerAutoprocessingStateTimer(Sender: TObject);
+begin
+  labelAutoProcessingState.Caption := labelAutoProcessingState.Caption + '.';
+  if labelAutoProcessingState.Caption = 'јвтопроцессинг запущен....' then
+    labelAutoProcessingState.Caption := 'јвтопроцессинг запущен';
+end;
+
+procedure TformMain.timerAutoprocessingTimer(Sender: TObject);
+begin
+  timerAutoProcessing.Enabled := False;
+  buttonManualProcessingClick(Self);
+  timerAutoProcessing.Enabled := True;
+end;
+
+procedure TformMain.speedbuttonPlayMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  speedbuttonPlay.Glyph.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'Icons\PlayPush.bmp');
+end;
+
+procedure TformMain.speedbuttonPlayMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  speedbuttonPlay.Glyph.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'Icons\Play.bmp');
+end;
+
+procedure TformMain.speedbuttonStopMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  SpeedButtonStop.Glyph.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'Icons\StopPush.bmp');
+end;
+
+procedure TformMain.speedbuttonStopMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  SpeedButtonStop.Glyph.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'Icons\Stop.bmp');
+end;
+
+end.

@@ -23,7 +23,7 @@ object formMain: TformMain
     Top = 24
     Width = 305
     Height = 46
-    Caption = #1042#1099#1073#1077#1088#1080#1090#1077' '#1076#1080#1088#1077#1082#1090#1086#1088#1080#1102' '#1076#1083#1103' '#1084#1086#1085#1080#1090#1086#1088#1080#1085#1075#1072' '#1086#1090#1087#1088#1072#1074#1083#1077#1085#1085#1099#1093' '#1087#1080#1089#1077#1084
+    Caption = #1042#1099#1073#1077#1088#1080#1090#1077' '#1087#1072#1087#1082#1091' '#1076#1083#1103' '#1084#1086#1085#1080#1090#1086#1088#1080#1085#1075#1072' '#1086#1090#1087#1088#1072#1074#1083#1077#1085#1085#1099#1093' '#1087#1080#1089#1077#1084
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWhite
     Font.Height = -19
@@ -355,6 +355,9 @@ object formMain: TformMain
       B9B9B9ACACACA6A6A6AFAFAFBCBCBCD0D0D0E4E4E4F4F4F4FDFDFDFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+    OnClick = speedbuttonPlayClick
+    OnMouseDown = speedbuttonPlayMouseDown
+    OnMouseUp = speedbuttonPlayMouseUp
   end
   object speedbuttonStop: TSpeedButton
     Left = 488
@@ -658,6 +661,10 @@ object formMain: TformMain
       5E5E5E595959585858616161707070929292BCBCBCDEDEDEF6F6F6FEFEFEFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+    Visible = False
+    OnClick = speedbuttonStopClick
+    OnMouseDown = speedbuttonStopMouseDown
+    OnMouseUp = speedbuttonStopMouseUp
   end
   object labelAutoprocessingState: TLabel
     Left = 576
@@ -667,9 +674,9 @@ object formMain: TformMain
     Caption = #1040#1074#1090#1086#1087#1088#1086#1094#1077#1089#1089#1080#1085#1075' '#1085#1077' '#1079#1072#1087#1091#1097#1077#1085
   end
   object editDirectorySentMails: TEdit
-    Left = 352
+    Left = 344
     Top = 32
-    Width = 425
+    Width = 433
     Height = 27
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
@@ -687,10 +694,11 @@ object formMain: TformMain
     Height = 33
     Caption = '...'
     TabOrder = 1
+    OnClick = buttonDirectorySentMailsClick
   end
   object richeditLog: TRichEdit
-    Left = 9
-    Top = 192
+    Left = 8
+    Top = 194
     Width = 832
     Height = 427
     Alignment = taCenter
@@ -721,6 +729,8 @@ object formMain: TformMain
     ParentFont = False
     TabOrder = 3
     Value = 0
+    OnChange = spineditMinChange
+    OnKeyPress = spineditMinKeyPress
   end
   object spineditSec: TSpinEdit
     Left = 378
@@ -738,6 +748,8 @@ object formMain: TformMain
     ParentFont = False
     TabOrder = 4
     Value = 30
+    OnChange = spineditSecChange
+    OnKeyPress = spineditSecKeyPress
   end
   object buttonManualProcessing: TButton
     Left = 576
@@ -746,12 +758,17 @@ object formMain: TformMain
     Height = 35
     Caption = #1054#1073#1088#1072#1073#1086#1090#1072#1090#1100' '#1074#1088#1091#1095#1085#1091#1102
     TabOrder = 5
+    OnClick = buttonManualProcessingClick
   end
   object timerAutoprocessing: TTimer
+    Enabled = False
+    OnTimer = timerAutoprocessingTimer
     Left = 104
     Top = 144
   end
   object timerAutoprocessingState: TTimer
+    Enabled = False
+    OnTimer = timerAutoprocessingStateTimer
     Left = 224
     Top = 144
   end
