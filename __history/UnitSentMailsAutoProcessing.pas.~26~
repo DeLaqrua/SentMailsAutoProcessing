@@ -52,7 +52,7 @@ implementation
 
 procedure TformMain.FormCreate(Sender: TObject);
 begin
-  AddLog('Дата открытия программы: ' + DateToStr(Now) + ' ' + TimeToStr(Now) + #13#10, isInformation);
+  AddLog('Дата открытия программы: ' + DateToStr(Now) + ' ' + TimeToStr(Now) + #13#10, isSuccess);
 end;
 
 function TFormMain.CheckFileName(inputFileName: string): boolean;

@@ -24,7 +24,6 @@ type
     labelAutoprocessingState: TLabel;
     timerAutoprocessing: TTimer;
     timerAutoprocessingState: TTimer;
-    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -49,11 +48,6 @@ const
 implementation
 
 {$R *.dfm}
-
-procedure TformMain.FormCreate(Sender: TObject);
-begin
-  AddLog('Дата открытия программы: ' + DateToStr(Now) + ' ' + TimeToStr(Now) + #13#10, isInformation);
-end;
 
 function TFormMain.CheckFileName(inputFileName: string): boolean;
 begin

@@ -12,7 +12,6 @@ object formMain: TformMain
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  OnCreate = FormCreate
   DesignSize = (
     852
     629)
@@ -693,11 +692,10 @@ object formMain: TformMain
     Top = 192
     Width = 832
     Height = 427
-    Alignment = taCenter
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWhite
-    Font.Height = -13
+    Font.Height = -16
     Font.Name = 'Tahoma'
     Font.Style = []
     Lines.Strings = (
