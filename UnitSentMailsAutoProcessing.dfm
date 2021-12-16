@@ -670,7 +670,14 @@ object formMain: TformMain
     Top = 32
     Width = 425
     Height = 27
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 0
+    Text = 'E:\Proba\'#1054#1090#1087#1088#1072#1074#1083#1077#1085#1085#1099#1077' '#1087#1080#1089#1100#1084#1072
   end
   object buttonDirectorySentMails: TButton
     Left = 783
@@ -737,5 +744,13 @@ object formMain: TformMain
     Height = 35
     Caption = #1054#1073#1088#1072#1073#1086#1090#1072#1090#1100' '#1074#1088#1091#1095#1085#1091#1102
     TabOrder = 5
+  end
+  object timerAutoprocessing: TTimer
+    Left = 104
+    Top = 144
+  end
+  object timerAutoprocessingState: TTimer
+    Left = 224
+    Top = 144
   end
 end
