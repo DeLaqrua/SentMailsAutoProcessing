@@ -4,10 +4,24 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls,
+  Vcl.Samples.Spin, Vcl.Buttons;
 
 type
-  TForm1 = class(TForm)
+  TformMain = class(TForm)
+    labelDirectorySentMails: TLabel;
+    editDirectorySentMails: TEdit;
+    buttonDirectorySentMails: TButton;
+    richeditLog: TRichEdit;
+    labelAutoprocessingInterval: TLabel;
+    spineditMin: TSpinEdit;
+    labelMin: TLabel;
+    spineditSec: TSpinEdit;
+    labelSec: TLabel;
+    speedbuttonPlay: TSpeedButton;
+    speedbuttonStop: TSpeedButton;
+    buttonManualProcessing: TButton;
+    labelAutoprocessingState: TLabel;
   private
     { Private declarations }
   public
@@ -15,7 +29,7 @@ type
   end;
 
 var
-  Form1: TForm1;
+  formMain: TformMain;
 
 implementation
 

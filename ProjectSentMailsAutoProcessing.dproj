@@ -78,7 +78,7 @@
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 			<DCCReference Include="UnitSentMailsAutoProcessing.pas">
-				<Form>Form1</Form>
+				<Form>formMain</Form>
 				<FormType>dfm</FormType>
 			</DCCReference>
 			<BuildConfiguration Include="Release">
