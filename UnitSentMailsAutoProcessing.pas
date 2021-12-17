@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls,
   Vcl.Samples.Spin, Vcl.Buttons, Vcl.ExtCtrls,
-  System.Masks, FileCtrl;
+  Masks, FileCtrl, DateUtils;
 
 type
   TformMain = class(TForm)
@@ -29,6 +29,7 @@ type
     labelDirectoryVipnet: TLabel;
     editDirectoryVipnet: TEdit;
     buttonDirectoryVipnet: TButton;
+    groupboxTools: TGroupBox;
     procedure FormCreate(Sender: TObject);
     procedure buttonDirectorySentMailsClick(Sender: TObject);
     procedure buttonManualProcessingClick(Sender: TObject);
@@ -85,6 +86,11 @@ end;
 
 procedure TformMain.buttonManualProcessingClick(Sender: TObject);
 var searchResult: TSearchRec;
+    year: integer;
+    month: string;
+    directoryFrom, directoryToArchive, directoryToVipnet: string;
+    fileDirectoryFrom, fileDirectoryToArchive, fileDirectoryToVipnet: string;
+    pointerFileDirectoryFrom, pointerFileDirectoryTo, pointerFileDirectoryToVipnet: string;
 begin
   buttonManualProcessing.Enabled := False;
   timerAutoprocessing.Enabled := False;
@@ -107,6 +113,22 @@ begin
             repeat
               if CheckFileName(searchResult.Name) = True then
                 begin
+                  year := YearOf(Date);
+                  case MonthOf(Date) of
+                    1 : month := 'Январь';
+                    2 : month := 'Февраль';
+                    3 : month := 'Март';
+                    4 : month := 'Апрель';
+                    5 : month := 'Май';
+                    6 : month := 'Июнь';
+                    7 : month := 'Июль';
+                    8 : month := 'Август';
+                    9 : month := 'Сентябрь';
+                    10 : month := 'Октябрь';
+                    11 : month := 'Ноябрь';
+                    12 : month := 'Декабрь';
+                  else month := 'Неизвестный месяц оО';
+                  end;
 
                 end
               else addLog(DateToStr(Now) + ' ' + TimeToStr(Now) + '  ' + 'Имя файла ' + searchResult.Name + ' не соответствует Маске', isError);
