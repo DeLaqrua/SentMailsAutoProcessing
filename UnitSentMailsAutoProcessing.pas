@@ -55,7 +55,6 @@ type
   public
     function CheckFileName(inputFileName: string): boolean;
     function ifFileExistsRename(inputFileName: string): string;
-    function ifFolderExistsRename(inputFolderName: string): string;
     function CorrectPath(inputDirectory: string): string;
 
     procedure AddLog(inputString: string; LogType: integer); //LogType бывает:
@@ -68,7 +67,7 @@ var
   formMain: TformMain;
 
 var
-  directorySentMails, directorySentMailsArchive, directoryVipnet: string;
+  directorySentMails, directoryVipnet: string;
 
 const
   isError = 0;
@@ -88,7 +87,7 @@ procedure TformMain.buttonManualProcessingClick(Sender: TObject);
 var searchResult: TSearchRec;
     year: integer;
     month: string;
-    directoryFrom, directoryToArchive, directoryToVipnet: string;
+    directorySentMailsArchive: string;
     fileDirectoryFrom, fileDirectoryToArchive, fileDirectoryToVipnet: string;
     pointerFileDirectoryFrom, pointerFileDirectoryTo, pointerFileDirectoryToVipnet: string;
 begin
@@ -107,10 +106,9 @@ begin
       ShowMessage('Проверьте путь к папке для отправки писем Vipnet''ом. Папки не существует')
     else
       begin
-        {directorySentMailsArchive := directorySentMails + 'Archive\';
         if FindFirst(directorySentMails + '*.*', faNormal, searchResult) = 0 then
           begin
-            repeat
+            {repeat
               if CheckFileName(searchResult.Name) = True then
                 begin
                   year := YearOf(Date);
@@ -129,11 +127,13 @@ begin
                     12 : month := 'Декабрь';
                   else month := 'Неизвестный месяц оО';
                   end;
-
+                  directorySentMailsArchive := directorySentMails + 'Archive\' + IntToStr(year) + '\' + month + '\';
+                  if System.SysUtils.DirectoryExists(directorySentMailsArchive) = False then
+                    System.SysUtils.DirectoryExists(directorySentMailsArchive);
                 end
               else addLog(DateToStr(Now) + ' ' + TimeToStr(Now) + '  ' + 'Имя файла ' + searchResult.Name + ' не соответствует Маске', isError);
-            until FindNext(searchResult) <> 0;
-          end;}
+            until FindNext(searchResult) <> 0;}
+          end;
       end;
   finally
     buttonManualProcessing.Enabled := True;
@@ -196,29 +196,6 @@ begin
           result := inputFileName;
         end;
     end;
-end;
-
-function TFormMain.ifFolderExistsRename(inputFolderName: string): string;
-var counterName: integer;
-begin
-  result := inputFolderName;
-
-  counterName := 0;
-  while System.SysUtils.DirectoryExists(inputFolderName) do
-    begin
-      counterName := counterName + 1;
-      if counterName = 1 then
-        begin
-          Insert(' (' + IntToStr(counterName) + ')', inputFolderName, Length(inputFolderName));
-          result := inputFolderName;
-        end
-      else
-        begin
-          inputFolderName := StringReplace(inputFolderName, ' (' + IntToStr(counterName-1) +')', ' (' + IntToStr(counterName) + ')', []);
-          result := inputFolderName;
-        end;
-    end;
-
 end;
 
 function TFormMain.CorrectPath(inputDirectory: string): string;

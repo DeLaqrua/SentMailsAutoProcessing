@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls,
   Vcl.Samples.Spin, Vcl.Buttons, Vcl.ExtCtrls,
-  System.Masks, FileCtrl;
+  Masks, FileCtrl, DateUtils;
 
 type
   TformMain = class(TForm)
@@ -29,6 +29,7 @@ type
     labelDirectoryVipnet: TLabel;
     editDirectoryVipnet: TEdit;
     buttonDirectoryVipnet: TButton;
+    groupboxTools: TGroupBox;
     procedure FormCreate(Sender: TObject);
     procedure buttonDirectorySentMailsClick(Sender: TObject);
     procedure buttonManualProcessingClick(Sender: TObject);
@@ -53,7 +54,7 @@ type
     { Private declarations }
   public
     function CheckFileName(inputFileName: string): boolean;
-    function ifFolderExistsRename(inputFolderName: string): string;
+    function ifFileExistsRename(inputFileName: string): string;
     function CorrectPath(inputDirectory: string): string;
 
     procedure AddLog(inputString: string; LogType: integer); //LogType бывает:
@@ -84,6 +85,11 @@ end;
 
 procedure TformMain.buttonManualProcessingClick(Sender: TObject);
 var searchResult: TSearchRec;
+    year: integer;
+    month: string;
+    directorySentMailsArchive: string;
+    fileDirectoryFrom, fileDirectoryToArchive, fileDirectoryToVipnet: string;
+    pointerFileDirectoryFrom, pointerFileDirectoryTo, pointerFileDirectoryToVipnet: string;
 begin
   buttonManualProcessing.Enabled := False;
   timerAutoprocessing.Enabled := False;
@@ -103,7 +109,29 @@ begin
         if FindFirst(directorySentMails + '*.*', faNormal, searchResult) = 0 then
           begin
             repeat
-
+              if CheckFileName(searchResult.Name) = True then
+                begin
+                  year := YearOf(Date);
+                  case MonthOf(Date) of
+                    1 : month := 'Январь';
+                    2 : month := 'Февраль';
+                    3 : month := 'Март';
+                    4 : month := 'Апрель';
+                    5 : month := 'Май';
+                    6 : month := 'Июнь';
+                    7 : month := 'Июль';
+                    8 : month := 'Август';
+                    9 : month := 'Сентябрь';
+                    10 : month := 'Октябрь';
+                    11 : month := 'Ноябрь';
+                    12 : month := 'Декабрь';
+                  else month := 'Неизвестный месяц оО';
+                  end;
+                  directorySentMailsArchive := directorySentMails + 'Archive\' + IntToStr(year) + '\' + month + '\';
+                  if System.SysUtils.DirectoryExists(directorySentMailsArchive) = False then
+                    System.SysUtils.DirectoryExists(directorySentMailsArchive);
+                end
+              else addLog(DateToStr(Now) + ' ' + TimeToStr(Now) + '  ' + 'Имя файла ' + searchResult.Name + ' не соответствует Маске', isError);
             until FindNext(searchResult) <> 0;
           end;
       end;
@@ -148,27 +176,26 @@ begin
 
 end;
 
-function TFormMain.ifFolderExistsRename(inputFolderName: string): string;
+function TFormMain.ifFileExistsRename(inputFileName: string): string;
 var counterName: integer;
 begin
-  result := inputFolderName;
+  result := inputFileName;
 
   counterName := 0;
-  while System.SysUtils.DirectoryExists(inputFolderName) do
+  while FileExists(inputFileName) do
     begin
       counterName := counterName + 1;
       if counterName = 1 then
         begin
-          Insert(' (' + IntToStr(counterName) + ')', inputFolderName, Length(inputFolderName));
-          result := inputFolderName;
+          Insert(' (' + IntToStr(counterName) + ')', inputFileName, Length(inputFileName)-Length(ExtractFileExt(inputFileName))+1);
+          result := inputFileName;
         end
       else
         begin
-          inputFolderName := StringReplace(inputFolderName, ' (' + IntToStr(counterName-1) +')', ' (' + IntToStr(counterName) + ')', []);
-          result := inputFolderName;
+          inputFileName := StringReplace(inputFileName, ' (' + IntToStr(counterName-1) + ')', ' (' + IntToStr(counterName) + ')', []);
+          result := inputFileName;
         end;
     end;
-
 end;
 
 function TFormMain.CorrectPath(inputDirectory: string): string;
