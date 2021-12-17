@@ -89,7 +89,7 @@ var searchResult: TSearchRec;
     month: string;
     directorySentMailsArchive: string;
     fileDirectoryFrom, fileDirectoryToArchive, fileDirectoryToVipnet: string;
-    pointerFileDirectoryFrom, pointerFileDirectoryTo, pointerFileDirectoryToVipnet: string;
+    pointerFileDirectoryFrom, pointerFileDirectoryToArchive, pointerFileDirectoryToVipnet: PWideChar;
 begin
   buttonManualProcessing.Enabled := False;
   timerAutoprocessing.Enabled := False;
@@ -108,7 +108,7 @@ begin
       begin
         if FindFirst(directorySentMails + '*.*', faNormal, searchResult) = 0 then
           begin
-            {repeat
+            repeat
               if CheckFileName(searchResult.Name) = True then
                 begin
                   year := YearOf(Date);
@@ -129,10 +129,28 @@ begin
                   end;
                   directorySentMailsArchive := directorySentMails + 'Archive\' + IntToStr(year) + '\' + month + '\';
                   if System.SysUtils.DirectoryExists(directorySentMailsArchive) = False then
-                    System.SysUtils.DirectoryExists(directorySentMailsArchive);
+                    System.SysUtils.ForceDirectories(directorySentMailsArchive);
+                  fileDirectoryFrom := directorySentMails + searchResult.Name;
+                  pointerFileDirectoryFrom := Addr(fileDirectoryFrom[1]);
+                  fileDirectoryToArchive := directorySentMailsArchive + searchResult.Name;
+                  fileDirectoryToArchive := ifFileExistsRename(fileDirectoryToArchive);
+                  pointerFileDirectoryToArchive := Addr(fileDirectoryToArchive[1]);
+                  fileDirectoryToVipnet := directoryVipnet + searchResult.Name;
+                  fileDirectoryToVipnet := ifFileExistsRename(fileDirectoryToVipnet);
+                  pointerFileDirectoryToVipnet := Addr(fileDirectoryToVipnet[1]);
+                  addLog('Копируем файл ' + searchResult.Name + ' в директорию Архива: ' + fileDirectoryToArchive, isInformation);
+                  if CopyFile(pointerFileDirectoryFrom, pointerFileDirectoryToArchive, false) = True then
+                    addLog('Файл ' + searchResult.Name + ' успешно скопирован', isSuccess)
+                  else
+                    addLog('Файл ' + searchResult.Name + ' не скопирован', isError);
+                  addLog('Переносим файл ' + searchResult.Name + ' в директоорию для отправки письма VipNet''ом: ' + fileDirectoryToVipnet, isInformation);
+                  if MoveFile(pointerFileDirectoryFrom, pointerFileDirectoryToVipnet) = True then
+                    addLog('Файл ' + searchResult.Name + ' успешно перенесён', isSuccess)
+                  else
+                    addLog('Файл ' + searchResult.Name + ' не перенесён', isError);
                 end
               else addLog(DateToStr(Now) + ' ' + TimeToStr(Now) + '  ' + 'Имя файла ' + searchResult.Name + ' не соответствует Маске', isError);
-            until FindNext(searchResult) <> 0;}
+            until FindNext(searchResult) <> 0;
           end;
       end;
   finally
