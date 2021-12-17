@@ -53,6 +53,7 @@ type
     { Private declarations }
   public
     function CheckFileName(inputFileName: string): boolean;
+    function ifFileExistsRename(inputFileName: string): string;
     function ifFolderExistsRename(inputFolderName: string): string;
     function CorrectPath(inputDirectory: string): string;
 
@@ -151,6 +152,28 @@ begin
       Result := True;
     end;
 
+end;
+
+function TFormMain.ifFileExistsRename(inputFileName: string): string;
+var counterName: integer;
+begin
+  result := inputFileName;
+
+  counterName := 0;
+  while FileExists(inputFileName) do
+    begin
+      counterName := counterName + 1;
+      if counterName = 1 then
+        begin
+          Insert(' (' + IntToStr(counterName) + ')', inputFileName, Length(inputFileName)-Length(ExtractFileExt(inputFileName))+1);
+          result := inputFileName;
+        end
+      else
+        begin
+          inputFileName := StringReplace(inputFileName, ' (' + IntToStr(counterName-1) + ')', ' (' + IntToStr(counterName) + ')', []);
+          result := inputFileName;
+        end;
+    end;
 end;
 
 function TFormMain.ifFolderExistsRename(inputFolderName: string): string;
