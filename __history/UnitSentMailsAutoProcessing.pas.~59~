@@ -25,6 +25,10 @@ type
     labelAutoprocessingState: TLabel;
     timerAutoprocessing: TTimer;
     timerAutoprocessingState: TTimer;
+    groupboxDirectory: TGroupBox;
+    labelDirectoryVipnet: TLabel;
+    editDirectoryVipnet: TEdit;
+    buttonDirectoryVipnet: TButton;
     procedure FormCreate(Sender: TObject);
     procedure buttonDirectorySentMailsClick(Sender: TObject);
     procedure buttonManualProcessingClick(Sender: TObject);
@@ -41,6 +45,10 @@ type
     procedure speedbuttonStopMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure spineditMinKeyPress(Sender: TObject; var Key: Char);
+    procedure spineditSecKeyPress(Sender: TObject; var Key: Char);
+    procedure spineditMinChange(Sender: TObject);
+    procedure spineditSecChange(Sender: TObject);
+    procedure buttonDirectoryVipnetClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -58,7 +66,7 @@ var
   formMain: TformMain;
 
 var
-  directorySentMails: string;
+  directorySentMails, directoryVipnet: string;
 
 const
   isError = 0;
@@ -83,9 +91,12 @@ begin
 
   try
     directorySentMails := CorrectPath(editDirectorySentMails.Text);
+    directoryVipnet := CorrectPath(editDirectoryVipnet.Text);
     if System.SysUtils.DirectoryExists(directorySentMails) = False then
       ShowMessage('Проверьте путь к папке для мониторинга отправленных писем. Папки не существует')
-
+    else
+    if System.SysUtils.DirectoryExists(directoryVipnet) = False then
+      ShowMessage('Проверьте путь к папке для отправки писем Vipnet''ом. Папки не существует')
     else
       begin
 
@@ -102,6 +113,12 @@ procedure TformMain.buttonDirectorySentMailsClick(Sender: TObject);
 begin
   if SelectDirectory('Выберите папку работы Автопроцессинга:', '', directorySentMails, [sdNewFolder, sdShowShares, sdNewUI, sdValidateDir]) then
     editDirectorySentMails.Text := directorySentMails;
+end;
+
+procedure TformMain.buttonDirectoryVipnetClick(Sender: TObject);
+begin
+  if SelectDirectory('Выберите папку для отправки писем Vipnet''ом:', '', directoryVipnet, [sdNewFolder, sdShowShares, sdNewUI, sdValidateDir]) then
+    editDirectoryVipnet.Text := directoryVipnet;
 end;
 
 function TFormMain.CheckFileName(inputFileName: string): boolean;
@@ -271,6 +288,23 @@ end;
 procedure TformMain.spineditMinKeyPress(Sender: TObject; var Key: Char);
 begin
   spineditMin.SelLength := 1;
+end;
+
+procedure TformMain.spineditSecKeyPress(Sender: TObject; var Key: Char);
+begin
+  spineditSec.SelLength := 1;
+end;
+
+procedure TformMain.spineditMinChange(Sender: TObject);
+begin
+  if SpinEditMin.Text = '' then
+    SpinEditMin.Text := '0';
+end;
+
+procedure TformMain.spineditSecChange(Sender: TObject);
+begin
+  if SpinEditSec.Text = '' then
+    SpinEditSec.Text := '0';
 end;
 
 end.

@@ -25,6 +25,10 @@ type
     labelAutoprocessingState: TLabel;
     timerAutoprocessing: TTimer;
     timerAutoprocessingState: TTimer;
+    groupboxDirectory: TGroupBox;
+    labelDirectoryVipnet: TLabel;
+    editDirectoryVipnet: TEdit;
+    buttonDirectoryVipnet: TButton;
     procedure FormCreate(Sender: TObject);
     procedure buttonDirectorySentMailsClick(Sender: TObject);
     procedure buttonManualProcessingClick(Sender: TObject);
@@ -44,6 +48,7 @@ type
     procedure spineditSecKeyPress(Sender: TObject; var Key: Char);
     procedure spineditMinChange(Sender: TObject);
     procedure spineditSecChange(Sender: TObject);
+    procedure buttonDirectoryVipnetClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -61,7 +66,7 @@ var
   formMain: TformMain;
 
 var
-  directorySentMails: string;
+  directorySentMails, directorySentMailsArchive, directoryVipnet: string;
 
 const
   isError = 0;
@@ -78,6 +83,7 @@ begin
 end;
 
 procedure TformMain.buttonManualProcessingClick(Sender: TObject);
+var searchResult: TSearchRec;
 begin
   buttonManualProcessing.Enabled := False;
   timerAutoprocessing.Enabled := False;
@@ -86,16 +92,28 @@ begin
 
   try
     directorySentMails := CorrectPath(editDirectorySentMails.Text);
+    directoryVipnet := CorrectPath(editDirectoryVipnet.Text);
     if System.SysUtils.DirectoryExists(directorySentMails) = False then
       ShowMessage('Проверьте путь к папке для мониторинга отправленных писем. Папки не существует')
-
+    else
+    if System.SysUtils.DirectoryExists(directoryVipnet) = False then
+      ShowMessage('Проверьте путь к папке для отправки писем Vipnet''ом. Папки не существует')
     else
       begin
+        {directorySentMailsArchive := directorySentMails + 'Archive\';
+        if FindFirst(directorySentMails + '*.*', faNormal, searchResult) = 0 then
+          begin
+            repeat
+              if CheckFileName(searchResult.Name) = True then
+                begin
 
+                end
+              else addLog(DateToStr(Now) + ' ' + TimeToStr(Now) + '  ' + 'Имя файла ' + searchResult.Name + ' не соответствует Маске', isError);
+            until FindNext(searchResult) <> 0;
+          end;}
       end;
   finally
     buttonManualProcessing.Enabled := True;
-    timerAutoprocessing.Enabled := True;
     speedbuttonPlay.Enabled := True;
     speedbuttonStop.Enabled := True;
   end;
@@ -105,6 +123,12 @@ procedure TformMain.buttonDirectorySentMailsClick(Sender: TObject);
 begin
   if SelectDirectory('Выберите папку работы Автопроцессинга:', '', directorySentMails, [sdNewFolder, sdShowShares, sdNewUI, sdValidateDir]) then
     editDirectorySentMails.Text := directorySentMails;
+end;
+
+procedure TformMain.buttonDirectoryVipnetClick(Sender: TObject);
+begin
+  if SelectDirectory('Выберите папку для отправки писем Vipnet''ом:', '', directoryVipnet, [sdNewFolder, sdShowShares, sdNewUI, sdValidateDir]) then
+    editDirectoryVipnet.Text := directoryVipnet;
 end;
 
 function TFormMain.CheckFileName(inputFileName: string): boolean;

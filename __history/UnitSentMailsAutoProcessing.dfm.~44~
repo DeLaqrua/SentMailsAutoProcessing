@@ -357,6 +357,7 @@ object formMain: TformMain
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
     OnClick = speedbuttonPlayClick
     OnMouseDown = speedbuttonPlayMouseDown
+    OnMouseUp = speedbuttonPlayMouseUp
   end
   object speedbuttonStop: TSpeedButton
     Left = 488
@@ -660,7 +661,10 @@ object formMain: TformMain
       5E5E5E595959585858616161707070929292BCBCBCDEDEDEF6F6F6FEFEFEFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+    Visible = False
     OnClick = speedbuttonStopClick
+    OnMouseDown = speedbuttonStopMouseDown
+    OnMouseUp = speedbuttonStopMouseUp
   end
   object labelAutoprocessingState: TLabel
     Left = 576
@@ -725,6 +729,8 @@ object formMain: TformMain
     ParentFont = False
     TabOrder = 3
     Value = 0
+    OnChange = spineditMinChange
+    OnKeyPress = spineditMinKeyPress
   end
   object spineditSec: TSpinEdit
     Left = 378
@@ -742,6 +748,8 @@ object formMain: TformMain
     ParentFont = False
     TabOrder = 4
     Value = 30
+    OnChange = spineditSecChange
+    OnKeyPress = spineditSecKeyPress
   end
   object buttonManualProcessing: TButton
     Left = 576
@@ -753,11 +761,13 @@ object formMain: TformMain
     OnClick = buttonManualProcessingClick
   end
   object timerAutoprocessing: TTimer
+    Enabled = False
     OnTimer = timerAutoprocessingTimer
     Left = 104
     Top = 144
   end
   object timerAutoprocessingState: TTimer
+    Enabled = False
     OnTimer = timerAutoprocessingStateTimer
     Left = 224
     Top = 144

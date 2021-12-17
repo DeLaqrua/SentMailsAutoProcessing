@@ -25,11 +25,30 @@ type
     labelAutoprocessingState: TLabel;
     timerAutoprocessing: TTimer;
     timerAutoprocessingState: TTimer;
+    groupboxDirectory: TGroupBox;
+    labelDirectoryVipnet: TLabel;
+    editDirectoryVipnet: TEdit;
+    buttonDirectoryVipnet: TButton;
     procedure FormCreate(Sender: TObject);
     procedure buttonDirectorySentMailsClick(Sender: TObject);
     procedure buttonManualProcessingClick(Sender: TObject);
     procedure speedbuttonPlayClick(Sender: TObject);
     procedure speedbuttonStopClick(Sender: TObject);
+    procedure timerAutoprocessingStateTimer(Sender: TObject);
+    procedure timerAutoprocessingTimer(Sender: TObject);
+    procedure speedbuttonPlayMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure speedbuttonPlayMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure speedbuttonStopMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure speedbuttonStopMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure spineditMinKeyPress(Sender: TObject; var Key: Char);
+    procedure spineditSecKeyPress(Sender: TObject; var Key: Char);
+    procedure spineditMinChange(Sender: TObject);
+    procedure spineditSecChange(Sender: TObject);
+    procedure buttonDirectoryVipnetClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -47,7 +66,7 @@ var
   formMain: TformMain;
 
 var
-  directorySentMails: string;
+  directorySentMails, directoryVipnet: string;
 
 const
   isError = 0;
@@ -91,6 +110,12 @@ procedure TformMain.buttonDirectorySentMailsClick(Sender: TObject);
 begin
   if SelectDirectory('Выберите папку работы Автопроцессинга:', '', directorySentMails, [sdNewFolder, sdShowShares, sdNewUI, sdValidateDir]) then
     editDirectorySentMails.Text := directorySentMails;
+end;
+
+procedure TformMain.buttonDirectoryVipnetClick(Sender: TObject);
+begin
+  if SelectDirectory('Выберите папку для отправки писем Vipnet''ом:', '', directoryVipnet, [sdNewFolder, sdShowShares, sdNewUI, sdValidateDir]) then
+    editDirectoryVipnet.Text := directoryVipnet;
 end;
 
 function TFormMain.CheckFileName(inputFileName: string): boolean;
@@ -217,6 +242,66 @@ begin
   labelAutoProcessingState.Caption := 'Автопроцессинг не запущен';
 
   timerAutoProcessing.Enabled := False;
+end;
+
+procedure TformMain.timerAutoprocessingStateTimer(Sender: TObject);
+begin
+  labelAutoProcessingState.Caption := labelAutoProcessingState.Caption + '.';
+  if labelAutoProcessingState.Caption = 'Автопроцессинг запущен....' then
+    labelAutoProcessingState.Caption := 'Автопроцессинг запущен';
+end;
+
+procedure TformMain.timerAutoprocessingTimer(Sender: TObject);
+begin
+  timerAutoProcessing.Enabled := False;
+  buttonManualProcessingClick(Self);
+  timerAutoProcessing.Enabled := True;
+end;
+
+procedure TformMain.speedbuttonPlayMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  speedbuttonPlay.Glyph.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'Icons\PlayPush.bmp');
+end;
+
+procedure TformMain.speedbuttonPlayMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  speedbuttonPlay.Glyph.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'Icons\Play.bmp');
+end;
+
+procedure TformMain.speedbuttonStopMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  speedbuttonStop.Glyph.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'Icons\StopPush.bmp');
+end;
+
+procedure TformMain.speedbuttonStopMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  speedbuttonStop.Glyph.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'Icons\Stop.bmp');
+end;
+
+procedure TformMain.spineditMinKeyPress(Sender: TObject; var Key: Char);
+begin
+  spineditMin.SelLength := 1;
+end;
+
+procedure TformMain.spineditSecKeyPress(Sender: TObject; var Key: Char);
+begin
+  spineditSec.SelLength := 1;
+end;
+
+procedure TformMain.spineditMinChange(Sender: TObject);
+begin
+  if SpinEditMin.Text = '' then
+    SpinEditMin.Text := '0';
+end;
+
+procedure TformMain.spineditSecChange(Sender: TObject);
+begin
+  if SpinEditSec.Text = '' then
+    SpinEditSec.Text := '0';
 end;
 
 end.

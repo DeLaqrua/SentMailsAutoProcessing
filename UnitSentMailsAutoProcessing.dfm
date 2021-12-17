@@ -2,7 +2,7 @@ object formMain: TformMain
   Left = 0
   Top = 0
   Caption = #1040#1074#1090#1086#1087#1088#1086#1094#1077#1089#1089#1080#1085#1075' '#1086#1090#1087#1088#1072#1074#1083#1077#1085#1085#1099#1093' '#1087#1080#1089#1077#1084
-  ClientHeight = 629
+  ClientHeight = 692
   ClientWidth = 852
   Color = clBlack
   Font.Charset = DEFAULT_CHARSET
@@ -15,47 +15,33 @@ object formMain: TformMain
   OnCreate = FormCreate
   DesignSize = (
     852
-    629)
+    692)
   PixelsPerInch = 96
   TextHeight = 19
-  object labelDirectorySentMails: TLabel
-    Left = 24
-    Top = 24
-    Width = 305
-    Height = 46
-    Caption = #1042#1099#1073#1077#1088#1080#1090#1077' '#1087#1072#1087#1082#1091' '#1076#1083#1103' '#1084#1086#1085#1080#1090#1086#1088#1080#1085#1075#1072' '#1086#1090#1087#1088#1072#1074#1083#1077#1085#1085#1099#1093' '#1087#1080#1089#1077#1084
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWhite
-    Font.Height = -19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    WordWrap = True
-  end
   object labelAutoprocessingInterval: TLabel
     Left = 120
-    Top = 112
+    Top = 184
     Width = 129
     Height = 19
     Caption = #1048#1085#1090#1077#1088#1074#1072#1083' '#1088#1072#1073#1086#1090#1099
   end
   object labelMin: TLabel
     Left = 336
-    Top = 112
+    Top = 184
     Width = 28
     Height = 19
     Caption = #1084#1080#1085
   end
   object labelSec: TLabel
     Left = 441
-    Top = 112
+    Top = 184
     Width = 23
     Height = 19
     Caption = #1089#1077#1082
   end
   object speedbuttonPlay: TSpeedButton
     Left = 488
-    Top = 91
+    Top = 163
     Width = 66
     Height = 65
     Glyph.Data = {
@@ -361,7 +347,7 @@ object formMain: TformMain
   end
   object speedbuttonStop: TSpeedButton
     Left = 488
-    Top = 91
+    Top = 163
     Width = 66
     Height = 65
     Glyph.Data = {
@@ -668,39 +654,16 @@ object formMain: TformMain
   end
   object labelAutoprocessingState: TLabel
     Left = 576
-    Top = 137
+    Top = 209
     Width = 208
     Height = 19
     Caption = #1040#1074#1090#1086#1087#1088#1086#1094#1077#1089#1089#1080#1085#1075' '#1085#1077' '#1079#1072#1087#1091#1097#1077#1085
   end
-  object editDirectorySentMails: TEdit
-    Left = 344
-    Top = 32
-    Width = 433
-    Height = 27
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = -16
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 0
-    Text = 'E:\Proba\'#1054#1090#1087#1088#1072#1074#1083#1077#1085#1085#1099#1077' '#1087#1080#1089#1100#1084#1072
-  end
-  object buttonDirectorySentMails: TButton
-    Left = 783
-    Top = 29
-    Width = 35
-    Height = 33
-    Caption = '...'
-    TabOrder = 1
-    OnClick = buttonDirectorySentMailsClick
-  end
   object richeditLog: TRichEdit
     Left = 8
-    Top = 194
+    Top = 264
     Width = 832
-    Height = 427
+    Height = 420
     Alignment = taCenter
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = RUSSIAN_CHARSET
@@ -711,11 +674,11 @@ object formMain: TformMain
     Lines.Strings = (
       'RichEdit1')
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 0
   end
   object spineditMin: TSpinEdit
     Left = 272
-    Top = 109
+    Top = 181
     Width = 58
     Height = 29
     Font.Charset = DEFAULT_CHARSET
@@ -727,14 +690,14 @@ object formMain: TformMain
     MaxValue = 59
     MinValue = 0
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 1
     Value = 0
     OnChange = spineditMinChange
     OnKeyPress = spineditMinKeyPress
   end
   object spineditSec: TSpinEdit
     Left = 378
-    Top = 109
+    Top = 181
     Width = 57
     Height = 29
     Font.Charset = DEFAULT_CHARSET
@@ -746,30 +709,111 @@ object formMain: TformMain
     MaxValue = 59
     MinValue = 0
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 2
     Value = 30
     OnChange = spineditSecChange
     OnKeyPress = spineditSecKeyPress
   end
   object buttonManualProcessing: TButton
     Left = 576
-    Top = 96
+    Top = 168
     Width = 201
     Height = 35
     Caption = #1054#1073#1088#1072#1073#1086#1090#1072#1090#1100' '#1074#1088#1091#1095#1085#1091#1102
-    TabOrder = 5
+    TabOrder = 3
     OnClick = buttonManualProcessingClick
+  end
+  object groupboxDirectory: TGroupBox
+    Left = 8
+    Top = 8
+    Width = 836
+    Height = 137
+    TabOrder = 4
+    object labelDirectorySentMails: TLabel
+      Left = 24
+      Top = 16
+      Width = 305
+      Height = 46
+      Caption = #1042#1099#1073#1077#1088#1080#1090#1077' '#1087#1072#1087#1082#1091' '#1076#1083#1103' '#1084#1086#1085#1080#1090#1086#1088#1080#1085#1075#1072' '#1086#1090#1087#1088#1072#1074#1083#1077#1085#1085#1099#1093' '#1087#1080#1089#1077#1084
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -19
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      WordWrap = True
+    end
+    object labelDirectoryVipnet: TLabel
+      Left = 24
+      Top = 71
+      Width = 272
+      Height = 46
+      Caption = #1042#1099#1073#1077#1088#1080#1090#1077' '#1087#1072#1087#1082#1091' '#1076#1083#1103' '#1086#1090#1087#1088#1072#1074#1082#1080' '#1087#1080#1089#1077#1084' Vipnet'#39#1086#1084
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -19
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      WordWrap = True
+    end
+    object buttonDirectorySentMails: TButton
+      Left = 783
+      Top = 21
+      Width = 35
+      Height = 33
+      Caption = '...'
+      TabOrder = 0
+      OnClick = buttonDirectorySentMailsClick
+    end
+    object editDirectorySentMails: TEdit
+      Left = 344
+      Top = 24
+      Width = 433
+      Height = 27
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+      Text = 'E:\Proba\'#1054#1090#1087#1088#1072#1074#1083#1077#1085#1085#1099#1077' '#1087#1080#1089#1100#1084#1072
+    end
+    object editDirectoryVipnet: TEdit
+      Left = 344
+      Top = 80
+      Width = 433
+      Height = 27
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+      Text = 'E:\Proba\AutoProcessingFiles\Output'
+    end
+    object buttonDirectoryVipnet: TButton
+      Left = 783
+      Top = 75
+      Width = 35
+      Height = 35
+      Caption = '...'
+      TabOrder = 3
+      OnClick = buttonDirectoryVipnetClick
+    end
   end
   object timerAutoprocessing: TTimer
     Enabled = False
     OnTimer = timerAutoprocessingTimer
     Left = 104
-    Top = 144
+    Top = 216
   end
   object timerAutoprocessingState: TTimer
     Enabled = False
     OnTimer = timerAutoprocessingStateTimer
     Left = 224
-    Top = 144
+    Top = 216
   end
 end
