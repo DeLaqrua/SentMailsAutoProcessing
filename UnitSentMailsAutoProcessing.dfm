@@ -2,7 +2,7 @@ object formMain: TformMain
   Left = 0
   Top = 0
   Caption = #1040#1074#1090#1086#1087#1088#1086#1094#1077#1089#1089#1080#1085#1075' '#1086#1090#1087#1088#1072#1074#1083#1077#1085#1085#1099#1093' '#1087#1080#1089#1077#1084
-  ClientHeight = 692
+  ClientHeight = 714
   ClientWidth = 852
   Color = clBlack
   Font.Charset = DEFAULT_CHARSET
@@ -15,25 +15,26 @@ object formMain: TformMain
   OnCreate = FormCreate
   DesignSize = (
     852
-    692)
+    714)
   PixelsPerInch = 96
   TextHeight = 19
   object richeditLog: TRichEdit
     Left = 8
     Top = 272
     Width = 836
-    Height = 412
+    Height = 417
     Alignment = taCenter
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = RUSSIAN_CHARSET
-    Font.Color = clWhite
+    Font.Color = clBlack
     Font.Height = -13
     Font.Name = 'Tahoma'
     Font.Style = []
-    Lines.Strings = (
-      'RichEdit1')
+    HideScrollBars = False
     ParentFont = False
-    TabOrder = 0
+    ReadOnly = True
+    ScrollBars = ssVertical
+    TabOrder = 1
   end
   object groupboxDirectory: TGroupBox
     Left = 8
@@ -41,7 +42,7 @@ object formMain: TformMain
     Width = 836
     Height = 137
     Anchors = [akTop]
-    TabOrder = 1
+    TabOrder = 0
     object labelDirectorySentMails: TLabel
       Left = 24
       Top = 16
@@ -779,7 +780,7 @@ object formMain: TformMain
       MaxValue = 59
       MinValue = 0
       ParentFont = False
-      TabOrder = 0
+      TabOrder = 1
       Value = 0
       OnChange = spineditMinChange
       OnKeyPress = spineditMinKeyPress
@@ -798,7 +799,7 @@ object formMain: TformMain
       MaxValue = 59
       MinValue = 0
       ParentFont = False
-      TabOrder = 1
+      TabOrder = 2
       Value = 30
       OnChange = spineditSecChange
       OnKeyPress = spineditSecKeyPress
@@ -809,9 +810,19 @@ object formMain: TformMain
       Width = 201
       Height = 35
       Caption = #1054#1073#1088#1072#1073#1086#1090#1072#1090#1100' '#1074#1088#1091#1095#1085#1091#1102
-      TabOrder = 2
+      TabOrder = 0
       OnClick = buttonManualProcessingClick
     end
+  end
+  object statusbarProcessing: TStatusBar
+    Left = 0
+    Top = 695
+    Width = 852
+    Height = 19
+    Panels = <
+      item
+        Width = 50
+      end>
   end
   object timerAutoprocessing: TTimer
     Enabled = False

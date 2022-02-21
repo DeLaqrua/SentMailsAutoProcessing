@@ -30,6 +30,7 @@ type
     editDirectoryVipnet: TEdit;
     buttonDirectoryVipnet: TButton;
     groupboxTools: TGroupBox;
+    statusbarProcessing: TStatusBar;
     procedure FormCreate(Sender: TObject);
     procedure buttonDirectorySentMailsClick(Sender: TObject);
     procedure buttonManualProcessingClick(Sender: TObject);
@@ -61,6 +62,7 @@ type
                                                              //isError Ц цвет текста  расный
                                                              //isSuccess Ц цвет текста «елЄный
                                                            //isInformation Ц цвет текста „Єрный
+    procedure updateStatusBar;
   end;
 
 var
@@ -68,6 +70,7 @@ var
 
 var
   directorySentMails, directoryVipnet: string;
+  statusTotal, statusSentMailsCount: integer;
 
 const
   isError = 0;
@@ -81,6 +84,9 @@ implementation
 procedure TformMain.FormCreate(Sender: TObject);
 begin
   AddLog('ƒата открыти€ программы: ' + DateToStr(Now) + ' ' + TimeToStr(Now) + #13#10, isInformation);
+  statusTotal := 0;
+  statusSentMailsCount := 0;
+  updateStatusBar;
 end;
 
 procedure TformMain.buttonManualProcessingClick(Sender: TObject);
@@ -144,10 +150,18 @@ begin
                   else
                     addLog('‘айл ' + searchResult.Name + ' не скопирован', isError);
                   addLog('ѕереносим файл ' + searchResult.Name + ' в директоорию дл€ отправки письма VipNet''ом: ' + fileDirectoryToVipnet, isInformation);
+                  statusTotal := statusTotal + 1;
                   if MoveFile(pointerFileDirectoryFrom, pointerFileDirectoryToVipnet) = True then
-                    addLog('‘айл ' + searchResult.Name + ' успешно перенесЄн', isSuccess)
+                    begin
+                      addLog('‘айл ' + searchResult.Name + ' успешно перенесЄн', isSuccess);
+                      statusSentMailsCount := statusSentMailsCount + 1;
+                      updateStatusBar;
+                    end
                   else
-                    addLog('‘айл ' + searchResult.Name + ' не перенесЄн', isError);
+                    begin
+                      addLog('‘айл ' + searchResult.Name + ' не перенесЄн', isError);
+                      updateStatusBar;
+                    end;
                 end
               else addLog(DateToStr(Now) + ' ' + TimeToStr(Now) + '  ' + '»м€ файла ' + searchResult.Name + ' не соответствует ћаске', isError);
             until FindNext(searchResult) <> 0;
@@ -238,7 +252,7 @@ end;
 
 procedure TFormMain.AddLog(inputString: string; LogType: integer); //LogType бывает:
                                                                    //isError Ц цвет текста  расный
-                                                                   //isSuccess Ц цвет текста «елЄный
+                                                                   //isSuccess Ц цвет текста „Єрный,  урсив
                                                                    //isInformation Ц цвет текста „Єрный
 begin
   case LogType of
@@ -355,6 +369,11 @@ procedure TformMain.spineditSecChange(Sender: TObject);
 begin
   if SpinEditSec.Text = '' then
     SpinEditSec.Text := '0';
+end;
+
+procedure TFormMain.updateStatusBar;
+begin
+  statusbarProcessing.Panels.Items[0].Text := 'ќтправлено ' + IntToStr(statusSentMailsCount) + ' писем из ' + IntToStr(StatusTotal);
 end;
 
 end.
