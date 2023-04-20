@@ -61,7 +61,7 @@ type
     procedure AddLog(inputString: string; LogType: integer); //LogType бывает:
                                                              //isError Ц цвет текста  расный
                                                              //isSuccess Ц цвет текста «елЄный
-                                                           //isInformation Ц цвет текста „Єрный
+                                                             //isInformation Ц цвет текста „Єрный
     procedure updateStatusBar;
   end;
 
@@ -149,7 +149,7 @@ begin
                     addLog('‘айл ' + searchResult.Name + ' успешно скопирован', isSuccess)
                   else
                     addLog('‘айл ' + searchResult.Name + ' не скопирован', isError);
-                  addLog('ѕереносим файл ' + searchResult.Name + ' в директоорию дл€ отправки письма VipNet''ом: ' + fileDirectoryToVipnet, isInformation);
+                  addLog('ѕереносим файл ' + searchResult.Name + ' в директорию дл€ отправки письма VipNet''ом: ' + fileDirectoryToVipnet, isInformation);
                   statusTotal := statusTotal + 1;
                   if MoveFile(pointerFileDirectoryFrom, pointerFileDirectoryToVipnet) = True then
                     begin
@@ -190,18 +190,24 @@ function TFormMain.CheckFileName(inputFileName: string): boolean;
 begin
   Result := False;
 
-  if MatchesMask(inputFileName, 'SH_*_*_*.*') or
-     MatchesMask(inputFileName, 'SH3_*_*_*.*') or
-     MatchesMask(inputFileName, 'SHO_*_*_*.*') or
-     MatchesMask(inputFileName, 'SHUD_*_*_*.*') or
-     MatchesMask(inputFileName, 'SMP_*_*_*.*') or
-     MatchesMask(inputFileName, 'SHCP_*_*_основной.*') or
-     MatchesMask(inputFileName, 'MSHO_*_MTP_*.*') or //MTP Ц по-английски
-     MatchesMask(inputFileName, 'MSHO_*_ћ“–_*.*') or //MTP Ц по-русски
-     MatchesMask(inputFileName, 'MSH_*_MTP_*.*') or //MTP Ц по-английски
-     MatchesMask(inputFileName, 'MSH_*_ћ“–_*.*') or //MTP Ц по-русски
-     MatchesMask(inputFileName, 'MSMP_*_MTP_*.*') or //MTP Ц по-английски
-     MatchesMask(inputFileName, 'MSMP_*_ћ“–_*.*') then //MTP Ц по-русски
+  if MatchesMask(inputFileName, 'SH_*_*_*.zip') or
+     MatchesMask(inputFileName, 'SH3_*_*_*.zip') or
+     MatchesMask(inputFileName, 'SHO_*_*_*.zip') or
+     MatchesMask(inputFileName, 'SHUD_*_*_*.zip') or
+     MatchesMask(inputFileName, 'SMP_*_*_*.zip') or
+     MatchesMask(inputFileName, 'SHCP_*_*_основной.zip') or
+     MatchesMask(inputFileName, 'CON_*_*_*.zip') or
+     MatchesMask(inputFileName, 'RCON_*_*_*.zip') or
+     MatchesMask(inputFileName, 'MSHO_*_ћ“–_*.zip') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'MSHO_*_MTP_*.zip') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'MSH_*_ћ“–_*.zip') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'MSH_*_MTP_*.zip') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'MSMP_*_ћ“–_*.zip') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'MSMP_*_MTP_*.zip') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'CON_*_ћ“–_*.zip') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'CON_*_MTP_*.zip') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'RCON_*_ћ“–_*.zip') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'RCON_*_MTP_*.zip') then //MTP Ц по-английски
     begin
       Result := True;
     end;
