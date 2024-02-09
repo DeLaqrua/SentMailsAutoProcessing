@@ -23,7 +23,6 @@ object formMain: TformMain
     Top = 272
     Width = 836
     Height = 417
-    Alignment = taCenter
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clBlack

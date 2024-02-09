@@ -153,7 +153,7 @@ begin
                   statusTotal := statusTotal + 1;
                   if MoveFile(pointerFileDirectoryFrom, pointerFileDirectoryToVipnet) = True then
                     begin
-                      addLog('Файл ' + searchResult.Name + ' успешно перенесён', isSuccess);
+                      addLog(DateToStr(Now) + ' файл ' + searchResult.Name + ' успешно перенесён в папку для отправки писем VipNet''ом', isSuccess);
                       statusSentMailsCount := statusSentMailsCount + 1;
                       updateStatusBar;
                     end

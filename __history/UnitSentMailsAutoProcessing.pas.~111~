@@ -30,7 +30,7 @@ type
     editDirectoryVipnet: TEdit;
     buttonDirectoryVipnet: TButton;
     groupboxTools: TGroupBox;
-    StatusBar1: TStatusBar;
+    statusbarProcessing: TStatusBar;
     procedure FormCreate(Sender: TObject);
     procedure buttonDirectorySentMailsClick(Sender: TObject);
     procedure buttonManualProcessingClick(Sender: TObject);
@@ -61,7 +61,7 @@ type
     procedure AddLog(inputString: string; LogType: integer); //LogType бывает:
                                                              //isError Ц цвет текста  расный
                                                              //isSuccess Ц цвет текста «елЄный
-                                                           //isInformation Ц цвет текста „Єрный
+                                                             //isInformation Ц цвет текста „Єрный
     procedure updateStatusBar;
   end;
 
@@ -70,7 +70,7 @@ var
 
 var
   directorySentMails, directoryVipnet: string;
-  statusTotal: integer;
+  statusTotal, statusSentMailsCount: integer;
 
 const
   isError = 0;
@@ -84,6 +84,9 @@ implementation
 procedure TformMain.FormCreate(Sender: TObject);
 begin
   AddLog('ƒата открыти€ программы: ' + DateToStr(Now) + ' ' + TimeToStr(Now) + #13#10, isInformation);
+  statusTotal := 0;
+  statusSentMailsCount := 0;
+  updateStatusBar;
 end;
 
 procedure TformMain.buttonManualProcessingClick(Sender: TObject);
@@ -146,11 +149,19 @@ begin
                     addLog('‘айл ' + searchResult.Name + ' успешно скопирован', isSuccess)
                   else
                     addLog('‘айл ' + searchResult.Name + ' не скопирован', isError);
-                  addLog('ѕереносим файл ' + searchResult.Name + ' в директоорию дл€ отправки письма VipNet''ом: ' + fileDirectoryToVipnet, isInformation);
+                  addLog('ѕереносим файл ' + searchResult.Name + ' в директорию дл€ отправки письма VipNet''ом: ' + fileDirectoryToVipnet, isInformation);
+                  statusTotal := statusTotal + 1;
                   if MoveFile(pointerFileDirectoryFrom, pointerFileDirectoryToVipnet) = True then
-                    addLog('‘айл ' + searchResult.Name + ' успешно перенесЄн', isSuccess)
+                    begin
+                      addLog('‘айл ' + searchResult.Name + ' успешно перенесЄн', isSuccess);
+                      statusSentMailsCount := statusSentMailsCount + 1;
+                      updateStatusBar;
+                    end
                   else
-                    addLog('‘айл ' + searchResult.Name + ' не перенесЄн', isError);
+                    begin
+                      addLog('‘айл ' + searchResult.Name + ' не перенесЄн', isError);
+                      updateStatusBar;
+                    end;
                 end
               else addLog(DateToStr(Now) + ' ' + TimeToStr(Now) + '  ' + '»м€ файла ' + searchResult.Name + ' не соответствует ћаске', isError);
             until FindNext(searchResult) <> 0;
@@ -179,18 +190,24 @@ function TFormMain.CheckFileName(inputFileName: string): boolean;
 begin
   Result := False;
 
-  if MatchesMask(inputFileName, 'SH_*_*_*.*') or
-     MatchesMask(inputFileName, 'SH3_*_*_*.*') or
-     MatchesMask(inputFileName, 'SHO_*_*_*.*') or
-     MatchesMask(inputFileName, 'SHUD_*_*_*.*') or
-     MatchesMask(inputFileName, 'SMP_*_*_*.*') or
-     MatchesMask(inputFileName, 'SHCP_*_*_основной.*') or
-     MatchesMask(inputFileName, 'MSHO_*_MTP_*.*') or //MTP Ц по-английски
-     MatchesMask(inputFileName, 'MSHO_*_ћ“–_*.*') or //MTP Ц по-русски
-     MatchesMask(inputFileName, 'MSH_*_MTP_*.*') or //MTP Ц по-английски
-     MatchesMask(inputFileName, 'MSH_*_ћ“–_*.*') or //MTP Ц по-русски
-     MatchesMask(inputFileName, 'MSMP_*_MTP_*.*') or //MTP Ц по-английски
-     MatchesMask(inputFileName, 'MSMP_*_ћ“–_*.*') then //MTP Ц по-русски
+  if MatchesMask(inputFileName, 'SH_*_*_*.zip') or
+     MatchesMask(inputFileName, 'SH3_*_*_*.zip') or
+     MatchesMask(inputFileName, 'SHO_*_*_*.zip') or
+     MatchesMask(inputFileName, 'SHUD_*_*_*.zip') or
+     MatchesMask(inputFileName, 'SMP_*_*_*.zip') or
+     MatchesMask(inputFileName, 'SHCP_*_*_основной.zip') or
+     MatchesMask(inputFileName, 'CON_*_*_*.zip') or
+     MatchesMask(inputFileName, 'RCON_*_*_*.zip') or
+     MatchesMask(inputFileName, 'MSHO_*_ћ“–_*.zip') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'MSHO_*_MTP_*.zip') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'MSH_*_ћ“–_*.zip') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'MSH_*_MTP_*.zip') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'MSMP_*_ћ“–_*.zip') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'MSMP_*_MTP_*.zip') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'CON_*_ћ“–_*.zip') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'CON_*_MTP_*.zip') or //MTP Ц по-английски
+     MatchesMask(inputFileName, 'RCON_*_ћ“–_*.zip') or //MTP Ц по-русски
+     MatchesMask(inputFileName, 'RCON_*_MTP_*.zip') then //MTP Ц по-английски
     begin
       Result := True;
     end;
@@ -358,6 +375,11 @@ procedure TformMain.spineditSecChange(Sender: TObject);
 begin
   if SpinEditSec.Text = '' then
     SpinEditSec.Text := '0';
+end;
+
+procedure TFormMain.updateStatusBar;
+begin
+  statusbarProcessing.Panels.Items[0].Text := 'ќтправлено ' + IntToStr(statusSentMailsCount) + ' писем из ' + IntToStr(StatusTotal);
 end;
 
 end.
